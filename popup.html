@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>FB Compliance Reporter</title>
+  <style>
+    body {
+      max-width: 480px;
+      margin: 40px auto;
+      font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+      padding: 20px 24px;
+      color: #1c1c1c;
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 10px;
+    }
+    h1 {
+      font-size: 18px;
+      margin: 0 0 10px 0;
+    }
+    .steps {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 14px;
+      line-height: 1.6;
+    }
+    .steps b { color: #333; }
+
+    label.field-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #333;
+      margin: 14px 0 6px;
+    }
+    textarea#linksInput {
+      width: 100%;
+      box-sizing: border-box;
+      min-height: 90px;
+      resize: vertical;
+      font-family: inherit;
+      font-size: 12px;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+    }
+    .hint {
+      font-size: 11px;
+      color: #999;
+      margin-top: 4px;
+    }
+
+    #startBtn, #stopBtn {
+      width: 100%;
+      padding: 12px;
+      margin-top: 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    #startBtn { background: #1877f2; color: white; }
+    #stopBtn { background: #b3261e; color: white; display: none; }
+    #tabInfo {
+      margin-top: 12px;
+      padding: 8px;
+      background: #f5f5f5;
+      border-radius: 6px;
+      font-size: 12px;
+      word-break: break-all;
+      display: none;
+    }
+    #progress {
+      font-size: 12px;
+      font-weight: 600;
+      color: #333;
+      margin-top: 10px;
+    }
+    #log {
+      margin-top: 8px;
+      max-height: 160px;
+      overflow-y: auto;
+      font-size: 11px;
+      border-top: 1px solid #eee;
+      padding-top: 6px;
+    }
+    .log-line { margin-bottom: 3px; }
+    .log-ok { color: #1a7a3e; }
+    .log-warn { color: #b8860b; }
+    .log-fail { color: #b3261e; }
+    .log-enforced { color: #3b5bdb; }
+
+    .result-box { display: none; margin-top: 14px; }
+    .result-box .box-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .result-box .box-head span { font-size: 12px; font-weight: 600; }
+    .result-box .copy-btn {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      background: #fafafa;
+      cursor: pointer;
+    }
+    .result-box textarea {
+      width: 100%;
+      box-sizing: border-box;
+      min-height: 70px;
+      font-size: 11px;
+      padding: 6px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      resize: vertical;
+    }
+    #enforcedBox .box-head span { color: #3b5bdb; }
+    #profileBox .box-head span { color: #6c6c6c; }
+    #attentionBox .box-head span { color: #b3261e; }
+    #attentionBox textarea { min-height: 120px; }
+  </style>
+</head>
+<body>
+  <h1>FB Compliance Reporter</h1>
+  <div class="steps">
+    Per tab: <b>⋯</b> → <b>Report post</b> → <b>Selling or promoting restricted items</b> →
+    <b>Tobacco</b> → <b>Submit</b> → wait for <b>Done</b><br />
+    Every tab closes after processing, except enforced pages ("Content isn't available"),
+    which are left open.
+  </div>
+
+  <label class="field-label" for="linksInput">Links to process (optional)</label>
+  <textarea id="linksInput" placeholder="Paste Facebook post/listing links here, one per line.
+Leave blank to instead use whatever matching tabs are already open."></textarea>
+  <div class="hint">Pasted links are validated first -- anything that isn't a recognizable Facebook post/listing/marketplace link is skipped immediately (no tab opened). profile.php links and enforced pages each get their own box below; other skipped, not-found and failed links go together in one. Valid ones are opened one at a time, run through the flow, then closed (or left open if not confirmed).</div>
+
+  <button id="startBtn">Start auto-run</button>
+  <button id="stopBtn">Stop</button>
+
+  <div id="tabInfo"></div>
+  <div id="progress"></div>
+  <div id="log"></div>
+
+  <div class="result-box" id="enforcedBox">
+    <div class="box-head">
+      <span id="enforcedTitle">Enforced / no longer exists</span>
+      <button class="copy-btn" data-target="enforcedText">Copy</button>
+    </div>
+    <textarea id="enforcedText" readonly></textarea>
+  </div>
+
+  <div class="result-box" id="profileBox">
+    <div class="box-head">
+      <span id="profileTitle">Profile links, not posts</span>
+      <button class="copy-btn" data-target="profileText">Copy</button>
+    </div>
+    <textarea id="profileText" readonly></textarea>
+  </div>
+
+  <div class="result-box" id="attentionBox">
+    <div class="box-head">
+      <span id="attentionTitle">Links not confirmed</span>
+      <button class="copy-btn" data-target="attentionText">Copy</button>
+    </div>
+    <textarea id="attentionText" readonly></textarea>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

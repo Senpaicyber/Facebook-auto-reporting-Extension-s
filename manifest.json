@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "FB Compliance Reporter",
+  "version": "1.12.0",
+  "description": "Step through Facebook post/listing tabs (pasted links, or whatever's already open) and file a restricted-items (tobacco) report on each, one tab at a time, closing each after a confirmed submission. See CHANGELOG.md for version history.",
+  "permissions": ["tabs", "scripting"],
+  "host_permissions": [
+    "https://www.facebook.com/*",
+    "https://facebook.com/*"
+  ],
+  "action": {
+    "default_title": "Open FB Compliance Reporter"
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}
